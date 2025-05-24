@@ -1,31 +1,38 @@
 <template>
+  <UApp>
   <div>
     <h1>Substitution Tracker</h1>
-    <h2>Total Time: {{ formatTime(totalTime) }}</h2>
+    <div class="flex">
+    <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge>
+    </div>
     <div class="lists">
       <div class="list">
         <h2>On Field</h2>
         <ul>
-          <li v-for="player in onFieldPlayers" :key="player.id">
-            {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }} {{ player.subNow }})
-            <button @click="substitute(player, 'off')">Sub Off</button>
+          <li v-for="player in onFieldPlayers" :key="player.id" class="mb-4">
+            {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow === true">Sub</UBadge>
+            <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md" class="ml-4">Sub Off</UButton>
           </li>
         </ul>
       </div>
       <div class="list">
         <h2>Off Field</h2>
         <ul>
-          <li v-for="player in offFieldPlayers" :key="player.id">
+          <li v-for="player in offFieldPlayers" :key="player.id" class="mb-4">
             {{ player.name }} - {{ formatTime(player.timeOffField) }} ({{ formatTime(player.totalTimeOffField) }})
-            <button @click="substitute(player, 'on')">Sub On</button>
+            <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>
           </li>
         </ul>
       </div>
     </div>
-    <button @click="toggleTimer">{{ isRunning ? "Stop" : "Start" }}</button>
-    <button @click="resetTimer">Reset</button>
-<!--    <button @click="swapTopPlayers">Swap</button>-->
+    <div class="mt-5">
+    <UButton @click="toggleTimer" trailing-icon="i-lucide-clock">{{ isRunning ? "Stop" : "Start" }}</UButton>
+    <UButton @click="resetTimer" class="ml-2" trailing-icon="i-lucide-circle-x">Reset</UButton>
+      
+<!--    <UButton @click="swapTopPlayers">Swap</UButton>-->
+    </div>
   </div>
+  </UApp>
 </template>
 
 <script>
@@ -56,15 +63,16 @@ export default {
         this.offFieldPlayers = this.offFieldPlayers.filter(p => p.id !== player.id);
       }
     },
-    // swapTopPlayers() {
-    //   if (this.onFieldPlayers.length > 0 && this.offFieldPlayers.length > 0) {
-    //     const onFieldTop = this.onFieldPlayers.shift();
-    //     const offFieldTop = this.offFieldPlayers.shift();
-    //
-    //     this.onFieldPlayers.unshift(offFieldTop);
-    //     this.offFieldPlayers.unshift(onFieldTop);
-    //   }
-    // },
+    swapTopPlayers() {
+      // if (this.onFieldPlayers.length > 0 && this.offFieldPlayers.length > 0) {
+      //   const onFieldTop = this.onFieldPlayers.shift();
+      //   const offFieldTop = this.offFieldPlayers.shift();
+      //
+      //   // Move the swapped players to the end of their new lists
+      //   this.onFieldPlayers.push(offFieldTop);
+      //   this.offFieldPlayers.push(onFieldTop);
+      // }
+    },
     resetTimer() {
       this.totalTime = 0;
     },

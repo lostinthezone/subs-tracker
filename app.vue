@@ -3,22 +3,25 @@
   <div>
     <h1>Substitution Tracker</h1>
     <div class="flex">
-    <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge>
+    <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> <p class="ml-4">Sub time: 10 seconds</p>
     </div>
     <div class="lists">
       <div class="list">
-        <h2>On Field</h2>
+        <h2>On Field <UIcon name="i-lucide-circle-play" class="size-5" /></h2>
         <ul>
           <li v-for="player in onFieldPlayers" :key="player.id" class="mb-4">
+
+<!--            <UCheckbox></UCheckbox> -->
             {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow === true">Sub</UBadge>
             <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md" class="ml-4">Sub Off</UButton>
           </li>
         </ul>
       </div>
       <div class="list">
-        <h2>Off Field</h2>
+        <h2>Off Field <UIcon name="i-lucide-circle-pause" class="size-5" /></h2>
         <ul>
           <li v-for="player in offFieldPlayers" :key="player.id" class="mb-4">
+<!--            <UCheckbox></UCheckbox> -->
             {{ player.name }} - {{ formatTime(player.timeOffField) }} ({{ formatTime(player.totalTimeOffField) }})
             <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>
           </li>
@@ -42,15 +45,16 @@ export default {
       totalTime: 0,
       startTime: null,
       onFieldPlayers: [
-        { id: 1, name: "Player 1", timeOnField: 0, totalTimeOnField: 0, totalTimeOffField: 0, subNow: false },
-        { id: 2, name: "Player 2", timeOnField: 0, totalTimeOnField: 0, totalTimeOffField: 0, subNow: false }
+        { id: 1, name: "Player 1", timeOnField: 0, totalTimeOnField: 0, totalTimeOffField: 0, subNow: false, position: "field" },
+        { id: 2, name: "Player 2", timeOnField: 0, totalTimeOnField: 0, totalTimeOffField: 0, subNow: false, position: "field" }
       ],
       offFieldPlayers: [
-        { id: 3, name: "Player 3", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false },
-        { id: 4, name: "Player 4", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false }
+        { id: 3, name: "Player 3", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false, position: "field" },
+        { id: 4, name: "Player 4", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false, position: "field" }
       ],
       isRunning: false,
-      interval: null
+      interval: null,
+      history: []
     };
   },
   methods: {

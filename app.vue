@@ -6,7 +6,7 @@
     <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> <p class="ml-4">Sub time: 10 seconds</p>
     </div>
     <div class="lists">
-      <div class="list">
+      <div class="list" style="width: 100%">
         <h2>On Field <UIcon name="i-lucide-circle-play" class="size-5" /></h2>
         <ul>
           <li v-for="player in onFieldPlayers" :key="player.id" class="mb-4">
@@ -15,15 +15,21 @@
             {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow === true">Sub</UBadge>
             <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md" class="ml-4">Sub Off</UButton>
           </li>
+          <li v-if="onFieldPlayers.length === 0">
+            <UBadge color="neutral">No players on the field</UBadge>
+          </li>          
         </ul>
       </div>
-      <div class="list">
+      <div class="list" style="width: 100%">
         <h2>Off Field <UIcon name="i-lucide-circle-pause" class="size-5" /></h2>
         <ul>
           <li v-for="player in offFieldPlayers" :key="player.id" class="mb-4">
 <!--            <UCheckbox></UCheckbox> -->
             {{ player.name }} - {{ formatTime(player.timeOffField) }} ({{ formatTime(player.totalTimeOffField) }})
             <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>
+          </li>
+          <li v-if="offFieldPlayers.length === 0">
+            <UBadge color="neutral">No players off the field</UBadge>
           </li>
         </ul>
       </div>
@@ -33,6 +39,11 @@
     <UButton @click="resetTimer" class="ml-2" trailing-icon="i-lucide-circle-x">Reset</UButton>
       
 <!--    <UButton @click="swapTopPlayers">Swap</UButton>-->
+    </div>
+    <div class="list">
+      <ul>
+        <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }} </li>
+      </ul>
     </div>
   </div>
   </UApp>
@@ -60,9 +71,12 @@ export default {
   methods: {
     substitute(player, status) {
       if (status === "off") {
+        // this.history.push(new Date().toLocaleTimeString() + ": player " + player.name + " went off field"); // with " + formatTime(player.timeOnField) + " seconds on field");
+        this.history.push(new Date().toLocaleTimeString() + ": player " + player.name + " went off field with "+ this.formatTime(player.timeOnField) + " time on field");
         this.offFieldPlayers.push({ ...player, timeOffField: 0 });
         this.onFieldPlayers = this.onFieldPlayers.filter(p => p.id !== player.id);
       } else {
+        this.history.push(new Date().toLocaleTimeString() + ": player " + player.name + " went on field");
         this.onFieldPlayers.push({ ...player, timeOnField: 0, subNow: false });
         this.offFieldPlayers = this.offFieldPlayers.filter(p => p.id !== player.id);
       }
@@ -78,13 +92,16 @@ export default {
       // }
     },
     resetTimer() {
+      this.history.push(new Date().toLocaleTimeString() + ": timer reset");
       this.totalTime = 0;
     },
     toggleTimer() {
       if (this.isRunning) {
+        this.history.push(new Date().toLocaleTimeString() + ": timer stopped");
         clearInterval(this.interval);
         this.isRunning = false;
       } else {
+        this.history.push(new Date().toLocaleTimeString() + ": timer started");
         this.isRunning = true;
         this.interval = setInterval(() => {
           this.totalTime++;
@@ -93,6 +110,7 @@ export default {
             player.totalTimeOnField++;
             if (player.timeOnField > 10) {
               player.subNow = true;
+              navigator.vibrate(100);
             }
           });
           this.offFieldPlayers.forEach(player => { 

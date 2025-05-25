@@ -30,6 +30,8 @@ let isRunning = useState<Boolean>(() => false);
 let history = useState<string[]>(() => ["App started"]);
 let subTime = useState<number>(() => 10);
 
+let version = "0.2";
+
 let interval: any = null;
 
 
@@ -143,6 +145,10 @@ function formatTime(seconds: any) {
       <ul>
         <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }} </li>
       </ul>
+    </div>
+    
+    <div class="list">
+      2025 {{ version }}
     </div>
   </div>
   </UApp>

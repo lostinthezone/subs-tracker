@@ -30,7 +30,7 @@ let isRunning = useState<Boolean>(() => false);
 let history = useState<string[]>(() => ["App started"]);
 let subTime = useState<number>(() => 10);
 
-let version = "0.2";
+let version = "0.3";
 
 let interval: any = null;
 
@@ -52,6 +52,7 @@ function swapTopPlayers() {
     const offFieldTop: any = offFieldPlayers.value.shift();
 
     onFieldTop.timeOffField = 0;
+    onFieldTop.subNow = false;
     offFieldTop.timeOnField = 0;
     
     onFieldPlayers.value.push(offFieldTop);

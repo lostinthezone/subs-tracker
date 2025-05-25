@@ -4,4 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/ui'],
   css: ['~/public/main.css'],
+  app: {
+    baseURL: '/subs-tracker/'
+  }
 })

@@ -6,5 +6,6 @@ export default defineNuxtConfig({
   css: ['~/public/main.css'],
   app: {
     baseURL: '/subs-tracker/'
-  }
+  },
+  ssr: false
 })

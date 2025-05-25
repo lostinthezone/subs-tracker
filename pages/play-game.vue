@@ -171,7 +171,7 @@ function formatTime2(millis: number): string {
     <div class="flex">
       <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }} (TODO start time)</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> <p class="ml-4">Sub time: {{ subTime }} seconds</p>
     </div>
-    <div>{{ formatTime2(timerStartTime) }} {{ formatDiffTime(diffTime) }}</div>
+    <div>{{ formatTime2(timerStartTime) }} {{ formatTime2(diffTime) }}</div>
     <div class="lists">
       <div class="list" style="width: 100%">
         <h2>On Field <UIcon name="i-lucide-circle-play" class="size-5" /></h2>

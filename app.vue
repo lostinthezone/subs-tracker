@@ -139,7 +139,7 @@ function formatTime(seconds: any) {
     <UButton @click="toggleTimer" trailing-icon="i-lucide-clock">{{ isRunning ? "Stop" : "Start" }}</UButton>
     <UButton @click="resetTimer" class="ml-2" trailing-icon="i-lucide-circle-x">Reset</UButton>
       
-    <UButton @click="swapTopPlayers" class="ml-2">Swap</UButton>
+    <UButton @click="swapTopPlayers" class="ml-2" trailing-icon="i-lucide-arrow-right-left">Swap</UButton>
       
     </div>
     <div class="list">

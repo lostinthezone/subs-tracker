@@ -17,7 +17,12 @@ interface Player {
 
 
 let totalTime = useState<number>(() => 0);
-let startTime = useState<number>(() => (new Date()).getSeconds());
+
+let startTime = useState<Date>(() => new Date());
+
+let timerStartTime = useState<number>(() => 0);
+let diffTime = useState<number>(() => 0);
+
 
 let onFieldPlayers = useState<Player[]>(() => [
 ]);
@@ -88,15 +93,21 @@ function toggleTimer() {
     history.value.push(new Date().toLocaleTimeString() + ": timer stopped");
     clearInterval(interval);
     isRunning.value = false;
+    
+    diffTime.value = 0;
+    
   } else {
     history.value.push(new Date().toLocaleTimeString() + ": timer started");
     isRunning.value = true;
+    
+    timerStartTime.value = new Date().getTime();
+    
     interval = setInterval(() => {
       totalTime.value++;
       onFieldPlayers.value.forEach(player => {
         player.timeOnField++;
         player.totalTimeOnField++;
-        if (player.timeOnField > subTime.value) {
+        if (!player.subNow && player.timeOnField > subTime.value) {
           player.subNow = true;
         }
       });
@@ -104,6 +115,9 @@ function toggleTimer() {
         player.timeOffField++;
         player.totalTimeOffField++;
       });
+      
+      diffTime.value = Math.abs(new Date().getTime() - timerStartTime.value);
+      
     }, 1000);
   }
 }
@@ -114,6 +128,41 @@ function formatTime(seconds: any) {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }
 
+function getTimeDifference(date1: Date, date2: Date) {
+  const diffMs = Math.abs(date2.getTime() - date1.getTime()); // Difference in milliseconds
+
+  const diffSeconds = Math.floor(diffMs / 1000) % 60;
+  const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60)) % 24;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  return {
+    days: diffDays,
+    hours: diffHours,
+    minutes: diffMinutes,
+    seconds: diffSeconds
+  };
+}
+
+function formatDiffTime(millis: number): string {
+  const seconds = Math.floor(millis / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  return minutes + ":" + seconds;
+}
+
+function formatTime2(millis: number): string {
+  const diffSeconds = Math.floor(millis / 1000) % 60;
+  const diffMinutes = Math.floor(millis / (1000 * 60)) % 60;
+  const diffHours = Math.floor(millis / (1000 * 60 * 60)) % 24;
+  const diffDays = Math.floor(millis / (1000 * 60 * 60 * 24));
+  
+  return diffMinutes + ":" + diffSeconds;
+}
+
+
 </script>
 
 <template>
@@ -122,6 +171,7 @@ function formatTime(seconds: any) {
     <div class="flex">
       <h2 class="mr-5">Total Time: {{ formatTime(totalTime) }} (TODO start time)</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> <p class="ml-4">Sub time: {{ subTime }} seconds</p>
     </div>
+    <div>{{ formatTime2(timerStartTime) }} {{ formatDiffTime(diffTime) }}</div>
     <div class="lists">
       <div class="list" style="width: 100%">
         <h2>On Field <UIcon name="i-lucide-circle-play" class="size-5" /></h2>
@@ -129,7 +179,7 @@ function formatTime(seconds: any) {
           <li v-for="player in onFieldPlayers" :key="player.id" class="mb-4">
 
             <!--            <UCheckbox></UCheckbox> -->
-            {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow === true">Sub</UBadge>
+            {{ player.name }} - {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow">Sub</UBadge>
             <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md" class="ml-4">Sub Off</UButton>
           </li>
           <li v-if="onFieldPlayers.length === 0">

@@ -52,7 +52,7 @@ let isRunning = useState<Boolean>(() => false);
 let history = useState<string[]>(() => ["App started"]);
 let subTime = useState<number>(() => 10);
 
-let version = "0.3";
+let version = "0.5";
 
 let interval: any = null;
 

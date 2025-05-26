@@ -221,21 +221,25 @@ console.log(formatTime(45000));  // Output: "00:45"
 </script>
 
 <template>
-  <div>
-    <h1>Substitution Tracker</h1>
+  <div class="p-2">
+<!--    <h1>Substitution Tracker</h1>-->
     <div class="flex">
-      <h2 class="mr-5">Total Time: {{ formatTime4(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> <p class="ml-4">Sub time: {{ subTime }} seconds</p>
+      <h2 class="mr-5">Total Time: {{ formatTime4(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> 
+<!--      <p class="ml-4">Sub time: {{ subTime }} seconds</p>-->
     </div>
-    <div>{{ formatTime2(timerStartTime) }} {{ formatTime4(diffTime) }}</div>
-    <div class="lists">
+<!--    <div>{{ formatTime2(timerStartTime) }} {{ formatTime4(diffTime) }}</div>-->
+    <div class="lists mt-2">
       <div class="list" style="width: 100%">
-        <h2>On Field <UIcon name="i-lucide-circle-play" class="size-5" /></h2>
+        <h2><UIcon name="i-lucide-circle-play" class="size-5" /> On Field</h2>
         <ul>
-          <li v-for="player in onFieldPlayers" :key="player.id" class="mb-4">
+          <li v-for="player in onFieldPlayers" :key="player.id" class="mb-2  border-lime-400 border-1 border-solid p-2 rounded-b-lg">
 
             <!--            <UCheckbox></UCheckbox> -->
-            {{ player.name }} - {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }}) <UBadge color="neutral" v-if="player.subNow">Sub</UBadge>
-            <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md" class="ml-4">Sub Off</UButton>
+            <div>
+            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }})
+            </div>
+            <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md">Sub Off</UButton>
+            <UBadge color="error" class="ml-4" v-if="player.subNow">Sub</UBadge>
           </li>
           <li v-if="onFieldPlayers.length === 0">
             <UBadge color="neutral">No players on the field</UBadge>
@@ -243,11 +247,11 @@ console.log(formatTime(45000));  // Output: "00:45"
         </ul>
       </div>
       <div class="list" style="width: 100%">
-        <h2>Off Field <UIcon name="i-lucide-circle-pause" class="size-5" /></h2>
+        <h2><UIcon name="i-lucide-circle-pause" class="size-5" /> Off Field</h2>
         <ul>
-          <li v-for="player in offFieldPlayers" :key="player.id" class="mb-4">
+          <li v-for="player in offFieldPlayers" :key="player.id" class="mb-2 border-lime-400 border-1 border-solid p-2 rounded-b-lg">
             <!--            <UCheckbox></UCheckbox> -->
-            {{ player.name }} - {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})
+            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})
             <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>
           </li>
           <li v-if="offFieldPlayers.length === 0">
@@ -256,20 +260,20 @@ console.log(formatTime(45000));  // Output: "00:45"
         </ul>
       </div>
     </div>
-    <div class="mt-5">
+    <div class="mt-2">
       <UButton @click="toggleTimer" trailing-icon="i-lucide-clock">{{ isRunning ? "Stop" : "Start" }}</UButton>
       <UButton @click="resetTimer" class="ml-2" trailing-icon="i-lucide-circle-x">Reset</UButton>
 
       <UButton @click="swapTopPlayers" class="ml-2" trailing-icon="i-lucide-arrow-right-left">Swap</UButton>
 
     </div>
-    <div class="list">
+    <div class="list mt-2">
       <ul>
         <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }} </li>
       </ul>
     </div>
 
-    <div class="list">
+    <div class="list mt-2">
       2025 {{ version }}
     </div>
   </div>
@@ -278,7 +282,7 @@ console.log(formatTime(45000));  // Output: "00:45"
 <style scoped>
 .lists {
   display: flex;
-  gap: 20px;
+  gap: 5px;
 }
 .list {
   border: 1px solid #ddd;

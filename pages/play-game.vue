@@ -232,7 +232,7 @@ console.log(formatTime(45000));  // Output: "00:45"
       <div class="list" style="width: 100%">
         <h2><UIcon name="i-lucide-circle-play" class="size-5" /> On Field</h2>
         <ul>
-          <li v-for="player in onFieldPlayers" :key="player.id" class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg">
+          <li v-for="player in onFieldPlayers" :key="player.id" class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg" :style="{ borderColor: player.subNow ? 'red' : 'green'}">
 
             <!--            <UCheckbox></UCheckbox> -->
             <div><b>{{ player.name }}</b></div>
@@ -252,9 +252,22 @@ console.log(formatTime(45000));  // Output: "00:45"
         <h2><UIcon name="i-lucide-circle-pause" class="size-5" /> Off Field</h2>
         <ul>
           <li v-for="player in offFieldPlayers" :key="player.id" class="mb-2 border-lime-400 border-1 border-solid p-2 rounded-b-lg">
-            <!--            <UCheckbox></UCheckbox> -->
-            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})
-            <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>
+<!--            &lt;!&ndash;            <UCheckbox></UCheckbox> &ndash;&gt;-->
+<!--            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})-->
+<!--            <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>-->
+            <div class="flex">
+              <div class="flex-col">
+                <b>{{ player.name }}</b>
+                <div><UIcon name="i-lucide-clock" class="size-3" /> {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})</div>
+                
+              </div>
+              <div class="flex-1">
+                
+              </div>
+              <div class="flex items-center justify-end">
+                <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md"></UButton>
+              </div>
+            </div>
           </li>
           <li v-if="offFieldPlayers.length === 0">
             <UBadge color="neutral">No players off the field</UBadge>

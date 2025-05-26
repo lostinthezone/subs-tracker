@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import {usePlayers} from "~/states";
+  import {usePlayers, useSubTime} from "~/states";
+  
+  let subTime = useSubTime();
 
   let playerName = useState<string>(() => "")
   let subInterval = useState<number>(() => 10);
@@ -28,7 +30,7 @@
     </ul>
     
     <span>Sub time</span>
-    <UInput v-model="subInterval"></UInput>
+    <UInput v-model="subTime"></UInput>
     
     <UButton to="/play-game">Next</UButton>
     

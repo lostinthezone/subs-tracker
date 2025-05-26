@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
-import {usePlayers} from "~/states";
+import {usePlayers, useSubTime} from "~/states";
 
 let players = usePlayers();
+let SubTotalTime = useSubTime()
 
 interface Player {
   id: number;
@@ -89,6 +90,7 @@ function swapTopPlayers() {
 
     onFieldTop.timeOffField = 0;
     onFieldTop.subNow = false;
+    
     offFieldTop.timeOnField = 0;
 
     onFieldPlayers.value.push(offFieldTop);
@@ -135,7 +137,7 @@ function toggleTimer() {
         player.timeOnField += currentDiffTime;
         player.totalTimeOnField += currentDiffTime;
         
-        if (!player.subNow && player.timeOnField > subTime.value * 1000) {
+        if (!player.subNow && player.timeOnField > SubTotalTime.value * 1000) {
           player.subNow = true;
         }
         
@@ -223,14 +225,14 @@ console.log(formatTime(45000));  // Output: "00:45"
 <template>
   <div class="p-2">
 <!--    <h1>Substitution Tracker</h1>-->
-    <div class="flex">
+    <div class="flex items-center justify-center">
       <h2 class="mr-5">Total Time: {{ formatTime4(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> 
 <!--      <p class="ml-4">Sub time: {{ subTime }} seconds</p>-->
     </div>
 <!--    <div>{{ formatTime2(timerStartTime) }} {{ formatTime4(diffTime) }}</div>-->
     <div class="lists mt-2">
       <div class="list" style="width: 100%">
-        <h2><UIcon name="i-lucide-circle-play" class="size-5" /> On Field</h2>
+        <h2 class="flex items-center"><UIcon name="i-lucide-circle-play" class="size-5 mr-1" /> On Field</h2>
         <ul>
           <li v-for="player in onFieldPlayers" :key="player.id" class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg" :style="{ borderColor: player.subNow ? 'red' : 'green'}">
 
@@ -249,7 +251,7 @@ console.log(formatTime(45000));  // Output: "00:45"
         </ul>
       </div>
       <div class="list" style="width: 100%">
-        <h2><UIcon name="i-lucide-circle-pause" class="size-5" /> Off Field</h2>
+        <h2 class="flex items-center"><UIcon name="i-lucide-circle-pause" class="size-5 mr-1" /> Off Field</h2>
         <ul>
           <li v-for="player in offFieldPlayers" :key="player.id" class="mb-2 border-lime-400 border-1 border-solid p-2 rounded-b-lg">
 <!--            &lt;!&ndash;            <UCheckbox></UCheckbox> &ndash;&gt;-->

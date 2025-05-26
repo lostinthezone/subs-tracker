@@ -232,14 +232,16 @@ console.log(formatTime(45000));  // Output: "00:45"
       <div class="list" style="width: 100%">
         <h2><UIcon name="i-lucide-circle-play" class="size-5" /> On Field</h2>
         <ul>
-          <li v-for="player in onFieldPlayers" :key="player.id" class="mb-2  border-lime-400 border-1 border-solid p-2 rounded-b-lg">
+          <li v-for="player in onFieldPlayers" :key="player.id" class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg">
 
             <!--            <UCheckbox></UCheckbox> -->
+            <div><b>{{ player.name }}</b></div>
             <div>
-            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }})
+              <UIcon name="i-lucide-clock" class="size-3" />
+            {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }})
             </div>
             <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md">Sub Off</UButton>
-            <UBadge color="error" class="ml-4" v-if="player.subNow">Sub</UBadge>
+            <UBadge color="error" class="ml-1" v-if="player.subNow">Sub</UBadge>
           </li>
           <li v-if="onFieldPlayers.length === 0">
             <UBadge color="neutral">No players on the field</UBadge>
@@ -288,5 +290,6 @@ console.log(formatTime(45000));  // Output: "00:45"
   border: 1px solid #ddd;
   padding: 10px;
 }
+
 
 </style>

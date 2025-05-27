@@ -2,17 +2,14 @@
   import {usePlayers, useSubTime} from "~/states";
   
   let subTime = useSubTime();
-
   let playerName = useState<string>(() => "")
-  let subInterval = useState<number>(() => 10);
   
   let players = usePlayers();
   
+  players.value = ["Jake", "Sammy", "Albi", "Hewy", "Roo", "Ishaan"];
+  
   function addPlayer(name: string) {
-    console.log(name);
-    // names.value.push(name);
     playerName.value = "";
-    
     players.value.push(name);
   }
   

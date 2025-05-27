@@ -14,13 +14,13 @@ interface Player {
   totalTimeOffField: number;
   subNow: boolean;
   position: string;
-  
+
   baseTotalTimeOnField: number;
   baseTotalTimeOffField: number;
-  
+
   subOnTime: number;
   subOffTime: number;
-  
+
   lastUpdateOff: number;
   lastUpdateOn: number;
 }
@@ -35,20 +35,18 @@ let diffTime = useState<number>(() => 0);
 
 let lastUpdated = 0;
 
-let onFieldPlayers = useState<Player[]>(() => [
-]);
+let onFieldPlayers = useState<Player[]>(() => []);
 
-let offFieldPlayers = useState<Player[]>(() => [
-  // { id: 3, name: "Player 3", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false, position: "field", timeOnField: 0 },
-  // { id: 4, name: "Player 4", timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false, position: "field", timeOnField: 0 }
-]);
+let offFieldPlayers = useState<Player[]>(() => []);
 
 let pos = 1;
 players.value.forEach(player => {
-  offFieldPlayers.value.push({ id: pos, name: player, timeOffField: 0, totalTimeOffField: 0, 
-    totalTimeOnField: 0, subNow: false, position: "field", timeOnField: 0, 
-    baseTotalTimeOnField: 0, baseTotalTimeOffField: 0, subOnTime: 0, subOffTime: 0, lastUpdateOn: 0, lastUpdateOff: 0 })
-  pos ++;
+  offFieldPlayers.value.push({
+    id: pos, name: player, timeOffField: 0, totalTimeOffField: 0,
+    totalTimeOnField: 0, subNow: false, position: "field", timeOnField: 0,
+    baseTotalTimeOnField: 0, baseTotalTimeOffField: 0, subOnTime: 0, subOffTime: 0, lastUpdateOn: 0, lastUpdateOff: 0
+  })
+  pos++;
 })
 
 // let onFieldPlayers = useState<Player[]>(() => [
@@ -62,7 +60,7 @@ players.value.forEach(player => {
 // ]);
 
 let isRunning = useState<Boolean>(() => false);
-let history = useState<string[]>(() => ["App started"]);
+let history = useState<string[]>(() => []);
 let subTime = useState<number>(() => 10);
 
 let version = "0.6";
@@ -73,16 +71,30 @@ let interval: any = null;
 function substitute(player: any, status: string) {
   if (status === "off") {
     // Sub off
-    history.value.push(new Date().toLocaleTimeString() + ": player " + player.name + " went off field with "+ formatTime4(player.timeOnField) + " time on field");
-    offFieldPlayers.value.push({ ...player, timeOffField: 0, baseTotalTimeOffField: player.totalTimeOffField, subOffTime: new Date().getTime(), lastUpdateOff: new Date().getTime() });
+    history.value.push(new Date().toLocaleTimeString() + ": player " + player.name + " went off field with " + formatTime4(player.timeOnField) + " time on field");
+    offFieldPlayers.value.push({
+      ...player,
+      timeOffField: 0,
+      baseTotalTimeOffField: player.totalTimeOffField,
+      subOffTime: new Date().getTime(),
+      lastUpdateOff: new Date().getTime()
+    });
     onFieldPlayers.value = onFieldPlayers.value.filter(p => p.id !== player.id);
   } else {
     // Sub on
     history.value.push(new Date().toLocaleTimeString() + ": player " + player.name + " went on field");
-    onFieldPlayers.value.push({ ...player, timeOnField: 0, subNow: false, baseTotalTimeOnField: player.totalTimeOnField, subOnTime: new Date().getTime(), lastUpdateOn: new Date().getTime() });
+    onFieldPlayers.value.push({
+      ...player,
+      timeOnField: 0,
+      subNow: false,
+      baseTotalTimeOnField: player.totalTimeOnField,
+      subOnTime: new Date().getTime(),
+      lastUpdateOn: new Date().getTime()
+    });
     offFieldPlayers.value = offFieldPlayers.value.filter(p => p.id !== player.id);
   }
 }
+
 function swapTopPlayers() {
   if (onFieldPlayers.value.length > 0 && offFieldPlayers.value.length > 0) {
     const onFieldTop: any = onFieldPlayers.value.shift();
@@ -90,7 +102,7 @@ function swapTopPlayers() {
 
     onFieldTop.timeOffField = 0;
     onFieldTop.subNow = false;
-    
+
     offFieldTop.timeOnField = 0;
 
     onFieldPlayers.value.push(offFieldTop);
@@ -109,18 +121,18 @@ function toggleTimer() {
     history.value.push(new Date().toLocaleTimeString() + ": timer stopped");
     clearInterval(interval);
     isRunning.value = false;
-    
+
     diffTime.value = 0;
-    
+
   } else {
     history.value.push(new Date().toLocaleTimeString() + ": timer started");
     isRunning.value = true;
-    
+
     lastUpdated = new Date().getTime();
-    
+
     timerStartTime.value = new Date().getTime();
-    
-    
+
+
     interval = setInterval(() => {
       const currentTime = new Date().getTime();
       const currentDiffTime = Math.abs(currentTime - lastUpdated);
@@ -128,32 +140,32 @@ function toggleTimer() {
 
       // var secs = Math.floor((new Date().getTime() - timerStartTime.value) / 1000);
       // console.log(secs);
-      
+
       // totalTime.value++;
       totalTime.value += currentDiffTime;
       // console.log(totalTime.value);
-      
+
       onFieldPlayers.value.forEach(player => {
         player.timeOnField += currentDiffTime;
         player.totalTimeOnField += currentDiffTime;
-        
+
         if (!player.subNow && player.timeOnField > SubTotalTime.value * 1000) {
           player.subNow = true;
         }
-        
+
       });
       offFieldPlayers.value.forEach(player => {
         player.timeOffField += currentDiffTime;
         player.totalTimeOffField += currentDiffTime;
-        
+
         // player.timeOffField++;
         // player.totalTimeOffField++;
-        
+
       });
-      
+
       // diffTime.value = Math.abs(new Date().getTime() - timerStartTime.value);
-      
-      
+
+
     }, 200);
   }
 }
@@ -185,7 +197,7 @@ function formatDiffTime(millis: number): string {
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
-  
+
   return minutes + ":" + seconds;
 }
 
@@ -194,7 +206,7 @@ function formatTime2(millis: number): string {
   const diffMinutes = Math.floor(millis / (1000 * 60)) % 60;
   const diffHours = Math.floor(millis / (1000 * 60 * 60)) % 24;
   const diffDays = Math.floor(millis / (1000 * 60 * 60 * 24));
-  
+
   return diffHours + ":" + diffMinutes + ":" + diffSeconds;
 }
 
@@ -224,25 +236,27 @@ console.log(formatTime(45000));  // Output: "00:45"
 
 <template>
   <div class="p-2">
-<!--    <h1>Substitution Tracker</h1>-->
-    <div class="flex items-center justify-center">
-      <h2 class="mr-5">Total Time: {{ formatTime4(totalTime) }}</h2><UBadge v-if="isRunning" color="neutral">Running</UBadge> 
-<!--      <p class="ml-4">Sub time: {{ subTime }} seconds</p>-->
+    <div class="flex">
+      <h2 class="mr-5">Total time: {{ formatTime4(totalTime) }}</h2>
+      <UBadge v-if="isRunning" color="neutral">Running</UBadge>
     </div>
-<!--    <div>{{ formatTime2(timerStartTime) }} {{ formatTime4(diffTime) }}</div>-->
+
     <div class="lists mt-2">
       <div class="list" style="width: 100%">
-        <h2 class="flex items-center"><UIcon name="i-lucide-circle-play" class="size-5 mr-1" /> On Field</h2>
+        <h2 class="flex items-center">
+          <UIcon name="i-lucide-circle-play" class="size-5 mr-1"/>
+          On Field
+        </h2>
         <ul>
-          <li v-for="player in onFieldPlayers" :key="player.id" class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg" :style="{ borderColor: player.subNow ? 'red' : 'green'}">
-
-            <!--            <UCheckbox></UCheckbox> -->
+          <li v-for="player in onFieldPlayers" :key="player.id"
+              class="border-lime-400 mb-2 border-1 border-solid p-2 rounded-b-lg"
+              :style="{ borderColor: player.subNow ? 'red' : 'green'}">
             <div><b>{{ player.name }}</b></div>
             <div>
-              <UIcon name="i-lucide-clock" class="size-3" />
-            {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }})
+              <UIcon name="i-lucide-clock" class="size-3"/>
+              {{ formatTime4(player.timeOnField) }} ({{ formatTime4(player.totalTimeOnField) }})
             </div>
-            <UButton @click="substitute(player, 'off')"  trailing-icon="i-lucide-arrow-right" size="md">Sub Off</UButton>
+            <UButton @click="substitute(player, 'off')" trailing-icon="i-lucide-arrow-right" size="md">Sub Off</UButton>
             <UBadge color="error" class="ml-1" v-if="player.subNow">Sub</UBadge>
           </li>
           <li v-if="onFieldPlayers.length === 0">
@@ -251,20 +265,22 @@ console.log(formatTime(45000));  // Output: "00:45"
         </ul>
       </div>
       <div class="list" style="width: 100%">
-        <h2 class="flex items-center"><UIcon name="i-lucide-circle-pause" class="size-5 mr-1" /> Off Field</h2>
+        <h2 class="flex items-center">
+          <UIcon name="i-lucide-circle-pause" class="size-5 mr-1"/>
+          Off Field
+        </h2>
         <ul>
-          <li v-for="player in offFieldPlayers" :key="player.id" class="mb-2 border-lime-400 border-1 border-solid p-2 rounded-b-lg">
-<!--            &lt;!&ndash;            <UCheckbox></UCheckbox> &ndash;&gt;-->
-<!--            <b>{{ player.name }}</b> - {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})-->
-<!--            <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md">Sub On</UButton>-->
+          <li v-for="player in offFieldPlayers" :key="player.id"
+              class="mb-2 border-lime-400 border-1 border-solid p-2 rounded-b-lg">
             <div class="flex">
               <div class="flex-col">
                 <b>{{ player.name }}</b>
-                <div><UIcon name="i-lucide-clock" class="size-3" /> {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})</div>
-                
+                <div>
+                  <UIcon name="i-lucide-clock" class="size-3"/>
+                  {{ formatTime4(player.timeOffField) }} ({{ formatTime4(player.totalTimeOffField) }})
+                </div>
               </div>
               <div class="flex-1">
-                
               </div>
               <div class="flex items-center justify-end">
                 <UButton @click="substitute(player, 'on')" trailing-icon="i-lucide-arrow-left" size="md"></UButton>
@@ -286,7 +302,7 @@ console.log(formatTime(45000));  // Output: "00:45"
     </div>
     <div class="list mt-2">
       <ul>
-        <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }} </li>
+        <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }}</li>
       </ul>
     </div>
 
@@ -301,10 +317,8 @@ console.log(formatTime(45000));  // Output: "00:45"
   display: flex;
   gap: 5px;
 }
-.list {
-  border: 1px solid #ddd;
-  padding: 10px;
-}
 
+.list {
+}
 
 </style>

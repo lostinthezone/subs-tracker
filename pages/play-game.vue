@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 const accordionItems = [
-  { label: "History", description: "History of the game", icon: 'i-lucide-smile', }
+  {label: "History", description: "History of the game", icon: 'i-lucide-smile',}
 ];
 
 import {usePlayers, useSubTime} from "~/states";
@@ -34,7 +34,14 @@ let offFieldPlayers = useState<Player[]>(() => []);
 let pos = 1;
 players.value.forEach(player => {
   offFieldPlayers.value.push({
-    id: pos, name: player, timeOffField: 0, totalTimeOffField: 0, totalTimeOnField: 0, subNow: false, position: "field", timeOnField: 0
+    id: pos,
+    name: player,
+    timeOffField: 0,
+    totalTimeOffField: 0,
+    totalTimeOnField: 0,
+    subNow: false,
+    position: "field",
+    timeOnField: 0
   })
   pos++;
 })
@@ -81,7 +88,7 @@ function swapTopPlayers() {
 
     history.value.push(new Date().toLocaleTimeString() + ": player " + onFieldTop.name + " went off field with " + formatTime(onFieldTop.timeOnField) + " time on field");
     history.value.push(new Date().toLocaleTimeString() + ": player " + offFieldTop.name + " went on field");
-    
+
     onFieldTop.timeOffField = 0;
     onFieldTop.subNow = false;
 
@@ -112,7 +119,7 @@ function toggleTimer() {
     isRunning.value = true;
     lastUpdated = new Date().getTime();
     timerStartTime.value = new Date().getTime();
-    
+
     interval = setInterval(() => {
       const currentTime = new Date().getTime();
       const currentDiffTime = Math.abs(currentTime - lastUpdated);
@@ -165,13 +172,15 @@ function formatTime(millis: number): string {
           <li v-for="player in onFieldPlayers" :key="player.id"
               class="border-lime-400 mb-2 border-1 border-solid p-1 rounded-b-lg"
               :style="{ borderColor: player.subNow ? 'red' : 'green'}">
-            <div><b>{{ player.name }}</b> <UBadge color="error" class="ml-1" v-if="player.subNow">Sub</UBadge></div>
+            <div><b>{{ player.name }}</b>
+              <UBadge color="error" class="ml-1" v-if="player.subNow">Sub</UBadge>
+            </div>
             <div>
               <UIcon name="i-lucide-clock" class="size-3"/>
               {{ formatTime(player.timeOnField) }} ({{ formatTime(player.totalTimeOnField) }})
             </div>
             <UButton @click="substitute(player, 'off')" trailing-icon="i-lucide-arrow-right" size="md">Sub Off</UButton>
-            
+
           </li>
           <li v-if="onFieldPlayers.length === 0">
             <UBadge color="neutral">No players on the field</UBadge>
@@ -210,24 +219,22 @@ function formatTime(millis: number): string {
     <div class="mt-2">
       <UButton @click="toggleTimer" trailing-icon="i-lucide-clock">{{ isRunning ? "Stop" : "Start" }}</UButton>
       <UButton @click="resetTimer" class="ml-2" trailing-icon="i-lucide-circle-x">Reset</UButton>
-
       <UButton @click="swapTopPlayers" class="ml-2" trailing-icon="i-lucide-arrow-right-left">Swap</UButton>
-
     </div>
-    
+
     <div class="list mt-2">
       <UAccordion :items="accordionItems">
         <template #content="{ item }">
-          <ul>
+          <ul v-if="history.length > 0">
             <li v-for="hist in history" :key="hist" class="mb-4">{{ hist }}</li>
           </ul>
+          <span v-if="history.length === 0">No history</span>
         </template>
-
-
       </UAccordion>
     </div>
-    
+
     <div class="list mt-2">
+      <hr/>
       2025 {{ version }}
     </div>
   </div>

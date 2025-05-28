@@ -1,10 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
-  <div>
-    <h3>Subo</h3>
-    
-    <UButton to="/add-players">Add players</UButton>
+  <div class="flex-col justify-center items-center">
+    <h3 class="text-2xl">Subo</h3>
+    <div>
+      <UButton to="/add-players">Add players</UButton>
+    </div>
   </div>
 </template>
 

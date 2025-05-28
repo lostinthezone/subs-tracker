@@ -19,7 +19,9 @@
   <div class="flex flex-col p-2 gap-2">
     <span>Player name</span>
     <UInput v-model="playerName"></UInput>
+    <div>
     <UButton @click="addPlayer(playerName)">Add player</UButton>
+    </div>
     
     <h2>Players</h2>
     <ul>
@@ -29,7 +31,9 @@
     <span>Sub time</span>
     <UInput v-model="subTime"></UInput>
     
-    <UButton to="/play-game">Next</UButton>
+    <div>
+    <UButton to="/play-game">Start</UButton>
+    </div>
     
   </div>
 </template>
